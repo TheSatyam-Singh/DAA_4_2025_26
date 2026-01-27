@@ -1,0 +1,12 @@
+1. Start
+2. Read the number of days n.
+3. Read the attendance record into an array.
+4. Initialize a map to store sum values with their first index.
+5. Set sum = 0 and maxlen = 0.
+6. Store initial sum 0 in the map with index -1.
+7. Traverse the array from index 0 to n-1.
+8. If the value is 'P', increment sum; if it is 'A', decrement sum.
+9. If the current sum is already present in the map, update maxlen.
+10. If the current sum is not present, store it with the current index.
+11. Print the maximum length of attendance.
+12. Stop
