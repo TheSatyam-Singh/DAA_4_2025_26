@@ -1,0 +1,14 @@
+Algorithm: K-th Highest Score Using Min Heap
+
+1. Start
+2. Read integers k and n
+3. Create an empty min heap
+4. Repeat for each incoming score:
+5. Read score x
+6. If heap size is less than k, insert x into heap
+7. Else if x is greater than the top of heap:
+8. Remove the top element from heap
+9. Insert x into heap
+10. If heap size is less than k, output -1
+11. Else output the top of heap
+12. End
