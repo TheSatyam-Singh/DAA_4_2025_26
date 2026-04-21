@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Huffman Coding Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">H</div>
+      <div>
+        <div class="brand-title">Huffman</div>
+        <div class="brand-sub">Visualizer</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#input-section" class="nav-item active">
+        <span class="nav-icon">✏️</span> Input
+      </a>
+      <a href="#stats-section" class="nav-item">
+        <span class="nav-icon">📊</span> Statistics
+      </a>
+      <a href="#codes-section" class="nav-item">
+        <span class="nav-icon">🔤</span> Codes
+      </a>
+      <a href="#tree-section" class="nav-item">
+        <span class="nav-icon">🌳</span> Tree
+      </a>
+      <a href="#encoded-section" class="nav-item">
+        <span class="nav-icon">📝</span> Binary
+      </a>
+      <a href="#decode-section" class="nav-item">
+        <span class="nav-icon">🔓</span> Decode
+      </a>
+      <a href="#steps-section" class="nav-item">
+        <span class="nav-icon">⚙️</span> Steps
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="algo-badge">O(n log n)</div>
+      <div class="algo-label">Time Complexity</div>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="page-wrap">
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1>Huffman Coding Visualizer</h1>
+        <p>Lossless text compression — step by step</p>
+      </div>
+      <div class="topbar-right">
+        <div class="status-dot" id="statusDot"></div>
+        <span class="status-label" id="statusLabel">Ready</span>
+      </div>
+    </header>
+
+    <main class="main">
+
+      <!-- Input -->
+      <section class="card" id="input-section">
+        <div class="card-header">
+          <div class="card-badge">01</div>
+          <h2>Enter Text</h2>
+        </div>
+        <div class="textarea-wrap">
+          <textarea
+            id="inputText"
+            placeholder="Type or paste text here… e.g. 'hello world' or 'aaabbbcc'"
+            rows="7"
+          ></textarea>
+          <div class="char-counter"><span id="charCount">0</span> characters</div>
+        </div>
+        <div class="btn-row">
+          <button id="encodeBtn" class="btn btn-primary">
+            <span class="btn-icon">⚡</span> Compress
+          </button>
+          <button id="resetBtn" class="btn btn-ghost">
+            <span class="btn-icon">↺</span> Reset
+          </button>
+        </div>
+      </section>
+
+      <!-- Stats -->
+      <section class="card" id="stats-section">
+        <div class="card-header">
+          <div class="card-badge">02</div>
+          <h2>Compression Statistics</h2>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">📄</div>
+            <p id="originalSize" class="stat-value">—</p>
+            <span class="stat-label">Original Size</span>
+            <span class="stat-unit">bytes</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🗜️</div>
+            <p id="compressedSize" class="stat-value">—</p>
+            <span class="stat-label">Compressed</span>
+            <span class="stat-unit">bytes</span>
+          </div>
+          <div class="stat-card stat-highlight">
+            <div class="stat-icon">📉</div>
+            <p id="compressionRatio" class="stat-value">—</p>
+            <span class="stat-label">Saved</span>
+            <span class="stat-unit">%</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🔡</div>
+            <p id="uniqueChars" class="stat-value">—</p>
+            <span class="stat-label">Unique Chars</span>
+            <span class="stat-unit">chars</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⚖️</div>
+            <p id="avgBitsPerChar" class="stat-value">—</p>
+            <span class="stat-label">Avg Bits/Char</span>
+            <span class="stat-unit">bits</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Two-column row: Codes + Tree -->
+      <div class="two-col">
+
+        <section class="card" id="codes-section">
+          <div class="card-header">
+            <div class="card-badge">03</div>
+            <h2>Huffman Codes</h2>
+          </div>
+          <div id="codesContainer" class="codes-container">
+            <p class="placeholder">Codes appear after compression</p>
+          </div>
+        </section>
+
+        <section class="card" id="tree-section">
+          <div class="card-header">
+            <div class="card-badge">04</div>
+            <h2>Tree Visualization</h2>
+          </div>
+          <canvas id="treeCanvas" width="1000" height="500"></canvas>
+          <div class="canvas-legend">
+            <span><span class="legend-leaf"></span> Leaf (Character)</span>
+            <span><span class="legend-merge"></span> Internal Node</span>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Encoded Binary -->
+      <section class="card" id="encoded-section">
+        <div class="card-header">
+          <div class="card-badge">05</div>
+          <h2>Encoded Binary Output</h2>
+        </div>
+        <div class="encoded-output">
+          <div id="encodedText" class="encoded-text">—</div>
+          <button id="copyEncodedBtn" class="btn btn-copy">
+            <span class="btn-icon">⎘</span> Copy
+          </button>
+        </div>
+      </section>
+
+      <!-- Decode -->
+      <section class="card" id="decode-section">
+        <div class="card-header">
+          <div class="card-badge">06</div>
+          <h2>Decode &amp; Verify</h2>
+        </div>
+        <button id="decodeBtn" class="btn btn-primary">
+          <span class="btn-icon">🔓</span> Decompress
+        </button>
+        <div class="decoded-output" id="decodedOutput" style="display:none;">
+          <h3>Decoded Text</h3>
+          <p id="decodedText"></p>
+          <p id="verificationMessage" class="verification"></p>
+        </div>
+      </section>
+
+      <!-- Steps -->
+      <section class="card" id="steps-section">
+        <div class="card-header">
+          <div class="card-badge">07</div>
+          <h2>Process Steps</h2>
+        </div>
+        <div id="stepsContainer" class="steps-container">
+          <p class="placeholder">Steps appear after compression</p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div id="stepsModal" class="modal">
+    <div class="modal-content">
+      <button class="close">&times;</button>
+      <h2>All Compression Steps</h2>
+      <div id="modalStepsContainer" class="modal-steps"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Live char counter
+    const inputText = document.getElementById('inputText');
+    const charCount = document.getElementById('charCount');
+    inputText.addEventListener('input', () => {
+      charCount.textContent = inputText.value.length;
+    });
+
+    // Smooth scroll nav highlight
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        navItems.forEach(n => n.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+
+    // Status indicator hook
+    const origEncode = window.handleEncode;
+    const statusDot = document.getElementById('statusDot');
+    const statusLabel = document.getElementById('statusLabel');
+
+    document.getElementById('encodeBtn').addEventListener('mousedown', () => {
+      statusDot.className = 'status-dot busy';
+      statusLabel.textContent = 'Processing…';
+    });
+
+    // Reset status after encode
+    const observer = new MutationObserver(() => {
+      const val = document.getElementById('originalSize').textContent;
+      if (val !== '—' && val !== '-') {
+        statusDot.className = 'status-dot done';
+        statusLabel.textContent = 'Done';
+      }
+    });
+    observer.observe(document.getElementById('originalSize'), { childList: true, characterData: true, subtree: true });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      statusDot.className = 'status-dot';
+      statusLabel.textContent = 'Ready';
+      charCount.textContent = '0';
+    });
+  </script>
+</body>
+</html>
